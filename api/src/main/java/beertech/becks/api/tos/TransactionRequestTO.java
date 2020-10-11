@@ -19,4 +19,8 @@ public class TransactionRequestTO {
 	 * The operation value
 	 */
 	private BigDecimal value;
+
+	private String originAccount;
+
+	private String destinationAccount;
 }

@@ -8,3 +8,5 @@ spring:
 api:
   transactions:
     endpoint: http://localhost:8080/transactions
+  currentAccount:
+    endpoint: http://localhost:8080/currentAccount

@@ -30,4 +30,10 @@ public class Transaction implements Serializable {
 	@Column(name = "data_transaction")
 	private ZonedDateTime dateTime;
 
+	@ManyToOne
+	@JoinColumn(name = "account_hash_value", referencedColumnName = "hash_value")
+	private CurrentAccount currentAccount;
+
+	@Column(name = "destination_hash_value")
+	private String destinationHashValue;
 }

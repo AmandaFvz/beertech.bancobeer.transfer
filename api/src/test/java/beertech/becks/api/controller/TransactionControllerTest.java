@@ -1,8 +1,8 @@
 package beertech.becks.api.controller;
 
-import beertech.becks.api.entities.Balance;
 import beertech.becks.api.entities.Transaction;
 import beertech.becks.api.model.TypeOperation;
+import beertech.becks.api.service.CurrentAccountService;
 import beertech.becks.api.service.TransactionService;
 import beertech.becks.api.tos.TransactionRequestTO;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -32,9 +32,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class TransactionControllerTest {
 
-  @Mock private TransactionService transactionService;
+  @Mock
+  private TransactionService transactionService;
 
-  @InjectMocks private TransactionController transactionController;
+  @Mock
+  private CurrentAccountService currentAccountService;
+
+  @InjectMocks
+  private TransactionController transactionController;
 
   private MockMvc mockMvc;
 
@@ -56,7 +61,7 @@ public class TransactionControllerTest {
     transaction.setTypeOperation(TypeOperation.DEPOSITO);
     transaction.setValueTransaction(BigDecimal.valueOf(12));
 
-    when(transactionService.createTransaction(any(TransactionRequestTO.class)))
+    when(transactionService.executeTransaction(any(TransactionRequestTO.class)))
         .thenReturn(transaction);
 
     MvcResult result =
@@ -69,7 +74,7 @@ public class TransactionControllerTest {
             .andExpect(status().isCreated())
             .andReturn();
 
-    verify(transactionService, times(1)).createTransaction(any(TransactionRequestTO.class));
+    verify(transactionService, times(1)).executeTransaction(any(TransactionRequestTO.class));
     String contentAsString = result.getResponse().getContentAsString();
 
     Transaction transactionResponse =
@@ -77,30 +82,5 @@ public class TransactionControllerTest {
 
     Assertions.assertEquals(
         transactionRequest.getValue(), transactionResponse.getValueTransaction());
-  }
-
-  @Test
-  void getBalance() throws Exception {
-    ObjectMapper mapper = new ObjectMapper();
-
-    Balance balance = new Balance();
-    balance.setBalance(BigDecimal.valueOf(123.5));
-    when(transactionService.getBalance()).thenReturn(balance);
-
-    MvcResult result =
-        this.mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/transactions").contentType(APPLICATION_JSON_VALUE))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn();
-
-    verify(transactionService, times(1)).getBalance();
-
-    String contentAsString = result.getResponse().getContentAsString();
-
-    Balance balanceResponse = mapper.readValue(contentAsString, new TypeReference<Balance>() {});
-
-    Assertions.assertEquals(balance.getBalance(), balanceResponse.getBalance());
   }
 }
