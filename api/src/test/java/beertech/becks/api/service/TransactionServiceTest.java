@@ -51,10 +51,10 @@ public class TransactionServiceTest {
         transaction.setTypeOperation(TypeOperation.SAQUE);
         transaction.setDateTime(ZonedDateTime.now());
 
-        when(currentAccountService.updateCurrentAccountBalance(any())).thenReturn(new CurrentAccount());
+        when(transactionRepository.save(any())).thenReturn(transaction);
 
         //WHEN
-        service.executeTransaction(transactionTO);
+        transaction = service.executeTransaction(transactionTO);
 
         //THEN
         Assertions.assertNotNull(transaction.getDateTime());
@@ -78,10 +78,10 @@ public class TransactionServiceTest {
         transaction.setTypeOperation(TypeOperation.DEPOSITO);
         transaction.setDateTime(ZonedDateTime.now());
 
-        when(currentAccountService.updateCurrentAccountBalance(any())).thenReturn(new CurrentAccount());
+        when(transactionRepository.save(any())).thenReturn(transaction);
 
         //WHEN
-        service.executeTransaction(transactionTO);
+        transaction = service.executeTransaction(transactionTO);
 
         //THEN
         Assertions.assertNotNull(transaction.getDateTime());
